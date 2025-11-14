@@ -1,0 +1,83 @@
+# ============================================================================
+# Rustfmt Configuration for API Management SE
+# ============================================================================
+
+# Edition
+edition = "2021"
+
+# Maximum line width
+max_width = 100
+
+# Hard tabs or spaces
+hard_tabs = false
+tab_spaces = 4
+
+# Newline style
+newline_style = "Unix"
+
+# Use field init shorthand if possible
+use_field_init_shorthand = true
+
+# Use try shorthand
+use_try_shorthand = true
+
+# Format strings
+format_strings = true
+
+# Format code in doc comments
+format_code_in_doc_comments = true
+
+# Normalize comments
+normalize_comments = true
+
+# Wrap comments
+wrap_comments = true
+comment_width = 80
+
+# Imports
+imports_granularity = "Crate"
+group_imports = "StdExternalCrate"
+reorder_imports = true
+
+# Functions
+fn_single_line = false
+fn_args_layout = "Tall"
+
+# Structs and enums
+struct_lit_single_line = false
+enum_discrim_align_threshold = 20
+
+# Control flow
+control_brace_style = "AlwaysSameLine"
+indent_style = "Block"
+
+# Chains
+chain_width = 60
+chains_overflow_last = true
+
+# Trailing comma
+trailing_comma = "Vertical"
+trailing_semicolon = true
+
+# Match arms
+match_arm_blocks = true
+match_block_trailing_comma = true
+
+# Blank lines
+blank_lines_upper_bound = 2
+blank_lines_lower_bound = 0
+
+# Misc
+remove_nested_parens = true
+space_after_colon = true
+space_before_colon = false
+spaces_around_ranges = false
+type_punctuation_density = "Wide"
+
+# Unstable features (require nightly)
+# Uncomment if using nightly Rust
+# unstable_features = true
+# format_macro_matchers = true
+# format_macro_bodies = true
+# overflow_delimited_expr = true
+

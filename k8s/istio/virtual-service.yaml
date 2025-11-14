@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: api-management
+spec:
+  hosts:
+  - api-management
+  - api.example.com
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1
+    route:
+    - destination:
+        host: api-management
+        port:
+          number: 80
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+    timeout: 10s
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: api-management
+        port:
+          number: 80
+

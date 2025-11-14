@@ -1,0 +1,249 @@
+[package]
+name = "rust-template"
+version = "3.0.0"
+edition = "2021"
+rust-version = "1.75"
+authors = ["Your Name <your.email@example.com>"]
+description = "Enterprise-grade Rust API template with modular features"
+license = "MIT"
+repository = "https://github.com/yourusername/rust-template"
+keywords = ["api", "rest", "graphql", "grpc", "template"]
+categories = ["web-programming", "asynchronous"]
+
+# ============================================================================
+# FEATURE FLAGS - Enable/Disable modules as needed
+# ============================================================================
+[features]
+default = ["rest-api", "database-postgres", "cache-redis", "auth-jwt", "observability-metrics", "docs"]
+
+# Core Features
+rest-api = ["actix-web", "actix-cors"]
+graphql = ["async-graphql", "async-graphql-actix-web"]
+grpc = ["tonic", "prost", "tonic-reflection"]
+websocket = ["actix-web-actors", "actix"]
+
+# Database Support
+database-postgres = ["sqlx", "sqlx/postgres"]
+database-mongodb = ["mongodb"]
+database-mysql = ["sqlx", "sqlx/mysql"]
+database-sqlite = ["sqlx", "sqlx/sqlite"]
+
+# Caching
+cache-redis = ["redis", "redis/tokio-comp", "redis/connection-manager"]
+cache-memcached = ["memcache-async"]
+
+# Authentication & Authorization
+auth-jwt = ["jsonwebtoken"]
+auth-oauth2 = ["oauth2", "reqwest"]
+auth-api-key = []
+
+# Observability
+observability-metrics = ["prometheus", "metrics", "metrics-exporter-prometheus"]
+observability-tracing = ["opentelemetry", "opentelemetry_sdk", "opentelemetry-otlp", "tracing-opentelemetry"]
+observability-profiling = ["pprof"]
+
+# Message Queue
+mq-kafka = ["rdkafka"]
+mq-rabbitmq = ["lapin"]
+mq-nats = ["async-nats"]
+
+# Additional Services
+email = ["lettre"]
+storage-s3 = ["aws-sdk-s3", "aws-config"]
+payments = []
+
+# Documentation
+docs = ["utoipa", "utoipa-swagger-ui"]
+
+# Full feature set (for testing/development)
+full = [
+    "rest-api", "graphql", "grpc", "websocket",
+    "database-postgres", "database-mongodb",
+    "cache-redis", "cache-memcached",
+    "auth-jwt", "auth-oauth2", "auth-api-key",
+    "observability-metrics", "observability-tracing", "observability-profiling",
+    "mq-kafka", "mq-rabbitmq", "mq-nats",
+    "email", "storage-s3", "payments",
+    "docs"
+]
+
+# ============================================================================
+# DEPENDENCIES
+# ============================================================================
+[dependencies]
+# Web Framework (Latest 2024-2025)
+actix-web = { version = "4.11", optional = true }
+actix-rt = "2.10"
+actix-cors = { version = "0.7", optional = true }
+actix-web-actors = { version = "4.3", optional = true }
+actix = { version = "0.13", optional = true }
+actix-limitation = "0.5"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Async Runtime (Latest with io-uring support on Linux)
+tokio = { version = "1.42", features = ["full", "tracing"] }
+futures-util = "0.3"
+futures = "0.3"
+async-trait = "0.1"
+
+# Parallel Processing
+rayon = "1.10"
+crossbeam = "0.8"
+
+# UUID & Time
+uuid = { version = "1.11", features = ["v4", "v7", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+time = { version = "0.3", features = ["serde", "formatting", "parsing"] }
+
+# Configuration
+dotenv = "0.15"
+config = "0.14"
+env_logger = "0.11"
+num_cpus = "1.16"
+envy = "0.4"
+
+# Logging & Tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json", "fmt", "ansi"] }
+tracing-actix-web = "0.7"
+tracing-opentelemetry = { version = "0.27", optional = true }
+
+# OpenTelemetry
+opentelemetry = { version = "0.27", optional = true }
+opentelemetry_sdk = { version = "0.27", optional = true, features = ["rt-tokio"] }
+opentelemetry-otlp = { version = "0.27", optional = true, features = ["grpc-tonic"] }
+
+# Error Handling
+thiserror = "2.0"
+anyhow = "1.0"
+color-eyre = "0.6"
+
+# Validation
+validator = { version = "0.18", features = ["derive"] }
+garde = { version = "0.20", features = ["derive"] }
+
+# Authentication & Security
+jsonwebtoken = { version = "9.3", optional = true }
+argon2 = { version = "0.5", features = ["std"] }
+sha2 = "0.10"
+bcrypt = "0.16"
+oauth2 = { version = "4.4", optional = true }
+reqwest = { version = "0.12", optional = true, features = ["json", "rustls-tls"] }
+rand = "0.8"
+hex = "0.4"
+
+# OpenAPI/Swagger
+utoipa = { version = "5.3", optional = true, features = ["actix_extras", "uuid", "chrono"] }
+utoipa-swagger-ui = { version = "8.0", optional = true, features = ["actix-web"] }
+
+# GraphQL
+async-graphql = { version = "7.0", optional = true, features = ["uuid", "chrono"] }
+async-graphql-actix-web = { version = "7.0", optional = true }
+
+# gRPC
+tonic = { version = "0.12", optional = true }
+prost = { version = "0.13", optional = true }
+tonic-reflection = { version = "0.12", optional = true }
+
+# Metrics & Monitoring
+prometheus = { version = "0.13", optional = true }
+metrics = { version = "0.24", optional = true }
+metrics-exporter-prometheus = { version = "0.16", optional = true }
+pprof = { version = "0.14", optional = true, features = ["flamegraph", "criterion"] }
+
+# Database - PostgreSQL
+sqlx = { version = "0.8", optional = true, features = ["runtime-tokio-rustls", "uuid", "chrono", "migrate", "macros"] }
+
+# Database - MongoDB
+mongodb = { version = "3.1", optional = true }
+
+# Redis for caching & rate limiting
+redis = { version = "0.27", optional = true, features = ["aio", "cluster", "streams"] }
+
+# Memcached
+memcache-async = { version = "0.6", optional = true }
+
+# Message Queue - Kafka
+rdkafka = { version = "0.37", optional = true, features = ["cmake-build"] }
+
+# Message Queue - RabbitMQ
+lapin = { version = "2.5", optional = true }
+
+# Message Queue - NATS
+async-nats = { version = "0.37", optional = true }
+
+# Email
+lettre = { version = "0.11", optional = true, features = ["tokio1-rustls-tls", "smtp-transport", "builder"] }
+
+# AWS S3
+aws-sdk-s3 = { version = "1.68", optional = true }
+aws-config = { version = "1.5", optional = true }
+
+# Compression
+actix-web-lab = "0.22"
+flate2 = "1.0"
+
+# Rate Limiting
+governor = "0.7"
+
+# Security
+ammonia = "4.0"
+
+# Background Jobs
+tokio-cron-scheduler = "0.13"
+
+# Utilities
+once_cell = "1.20"
+lazy_static = "1.5"
+bytes = "1.9"
+base64 = "0.22"
+
+[dev-dependencies]
+actix-rt = "2.10"
+tokio-test = "0.4"
+mockall = "0.13"
+fake = "2.10"
+criterion = { version = "0.5", features = ["html_reports"] }
+proptest = "1.5"
+wiremock = "0.6"
+
+[build-dependencies]
+tonic-build = { version = "0.12", optional = true }
+
+# ============================================================================
+# PROFILES
+# ============================================================================
+[profile.dev]
+opt-level = 0
+debug = true
+split-debuginfo = "unpacked"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = true
+panic = "abort"
+
+[profile.bench]
+inherits = "release"
+
+# ============================================================================
+# EXAMPLES
+# ============================================================================
+[[example]]
+name = "basic_api"
+required-features = ["auth-jwt"]
+
+[[example]]
+name = "websocket_server"
+required-features = ["websocket"]
+
+# ============================================================================
+# WORKSPACE (for future multi-crate setup)
+# ============================================================================
+[workspace]
+members = ["."]

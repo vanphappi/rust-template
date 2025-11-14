@@ -1,0 +1,64 @@
+# ============================================================================
+# Clippy Configuration for API Management SE
+# ============================================================================
+
+# Cognitive complexity threshold
+cognitive-complexity-threshold = 30
+
+# Type complexity threshold
+type-complexity-threshold = 250
+
+# Single char binding names threshold
+single-char-binding-names-threshold = 4
+
+# Too many arguments threshold
+too-many-arguments-threshold = 7
+
+# Too many lines threshold
+too-many-lines-threshold = 100
+
+# Large error types threshold
+large-error-threshold = 128
+
+# Enum variant names threshold
+enum-variant-name-threshold = 3
+
+# Verbose bit mask threshold
+verbose-bit-mask-threshold = 1
+
+# Literal representation threshold
+literal-representation-threshold = 10
+
+# Trivially copy pass by value size limit
+trivial-copy-size-limit = 128
+
+# Pass by value size limit
+pass-by-value-size-limit = 256
+
+# Too large for stack threshold
+too-large-for-stack = 200
+
+# Array size threshold
+array-size-threshold = 512000
+
+# Vec box size threshold
+vec-box-size-threshold = 4096
+
+# Max suggested slice pattern length
+max-suggested-slice-pattern-length = 3
+
+# Max trait bounds
+max-trait-bounds = 3
+
+# Max struct field visibility
+max-struct-field-visibility = "pub"
+
+# Disallowed names (variable names to avoid)
+disallowed-names = ["foo", "bar", "baz", "quux"]
+
+# Allowed scripts (for non-ASCII identifiers)
+allowed-scripts = ["Latin"]
+
+# Blacklisted names
+blacklisted-names = ["foo", "bar", "baz", "quux", "test"]
+

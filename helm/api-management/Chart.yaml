@@ -1,0 +1,15 @@
+apiVersion: v2
+name: api-management
+description: A Helm chart for API Management Template v3.0
+type: application
+version: 3.0.0
+appVersion: "3.0.0"
+keywords:
+  - api
+  - rust
+  - actix-web
+  - microservices
+maintainers:
+  - name: API Management Team
+    email: team@example.com
+
