@@ -55,27 +55,114 @@ NATS_URL=nats://localhost:4222
 
 Store all changes as a sequence of events instead of current state.
 
-```rust
-use rust_template::patterns::event_sourcing::{EventStore, Event};
+#### In-Memory Event Store (for development/testing)
 
-let event_store = EventStore::new();
+```rust
+use rust_template::patterns::{InMemoryEventStore, EventStore, StoredEvent};
+use chrono::Utc;
+
+let event_store = InMemoryEventStore::new();
 
 // Store event
-let event = Event {
+let event = StoredEvent {
+    id: uuid::Uuid::new_v4().to_string(),
     aggregate_id: "user-123".to_string(),
     event_type: "UserCreated".to_string(),
-    data: serde_json::json!({"name": "John", "email": "john@example.com"}),
-    version: 1,
+    payload: serde_json::json!({"name": "John", "email": "john@example.com"}),
     timestamp: Utc::now(),
+    version: 1,
 };
 
-event_store.append_event(event).await?;
+event_store.append(event)?;
 
 // Get all events for aggregate
-let events = event_store.get_events("user-123").await?;
+let events = event_store.get_events("user-123")?;
+
+// Get events since version 5
+let recent_events = event_store.get_events_since("user-123", 5)?;
+```
+
+#### PostgreSQL Event Store (for production)
+
+```rust
+use rust_template::patterns::{PostgresEventStore, StoredEvent};
+use sqlx::PgPool;
+
+// Connect to database
+let pool = PgPool::connect(&database_url).await?;
+let event_store = PostgresEventStore::new(pool);
+
+// Store event (async)
+let event = StoredEvent {
+    id: uuid::Uuid::new_v4().to_string(),
+    aggregate_id: "user-123".to_string(),
+    event_type: "UserCreated".to_string(),
+    payload: serde_json::json!({"name": "John", "email": "john@example.com"}),
+    timestamp: Utc::now(),
+    version: 1,
+};
+
+event_store.append_async(event).await?;
+
+// Get all events for aggregate
+let events = event_store.get_events_async("user-123").await?;
+
+// Get events since version 5
+let recent_events = event_store.get_events_since_async("user-123", 5).await?;
+
+// Query by event type (useful for projections)
+let user_created_events = event_store.get_events_by_type("UserCreated").await?;
+
+// Temporal queries (events in time range)
+let events_in_range = event_store.get_events_in_range(
+    "user-123",
+    start_time,
+    end_time
+).await?;
+```
+
+#### Rebuilding Aggregate State
+
+```rust
+use rust_template::patterns::Aggregate;
+
+// Define your aggregate
+struct UserAggregate {
+    id: String,
+    name: String,
+    email: String,
+    version: u64,
+}
+
+impl Aggregate for UserAggregate {
+    fn aggregate_id(&self) -> &str { &self.id }
+    fn version(&self) -> u64 { self.version }
+
+    fn apply_event(&mut self, event: &StoredEvent) -> Result<(), ApiError> {
+        match event.event_type.as_str() {
+            "UserCreated" => {
+                self.name = event.payload["name"].as_str().unwrap().to_string();
+                self.email = event.payload["email"].as_str().unwrap().to_string();
+                self.version = event.version;
+            }
+            "UserUpdated" => {
+                if let Some(name) = event.payload["name"].as_str() {
+                    self.name = name.to_string();
+                }
+                self.version = event.version;
+            }
+            _ => return Err(ApiError::bad_request("Unknown event type")),
+        }
+        Ok(())
+    }
+}
 
 // Rebuild state from events
-let user = rebuild_user_from_events(&events);
+let events = event_store.get_events_async("user-123").await?;
+let mut user = UserAggregate::new("user-123".to_string());
+for event in events {
+    user.apply_event(&event)?;
+}
 ```
 
 ### CQRS (Command Query Responsibility Segregation)
