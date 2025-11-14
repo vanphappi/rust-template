@@ -1,4 +1,4 @@
-# 🚀 API Management SE v3.0
+# 🚀 RUST TEMPLATE v3.0
 
 [![CI](https://github.com/yourusername/rust-template/workflows/CI/badge.svg)](https://github.com/yourusername/rust-template/actions)
 [![Security](https://github.com/yourusername/rust-template/workflows/Security%20Scan/badge.svg)](https://github.com/yourusername/rust-template/actions)
